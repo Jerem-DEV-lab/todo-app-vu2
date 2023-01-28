@@ -8,13 +8,13 @@
       @keyup.enter="addTodo"
     />
     <div class="todo__footer">
-      <button @click="filterTodo('All')">Tous</button>
-      <button @click="filterTodo('Not-completed')">A faire</button>
-      <button @click="filterTodo('Completed')">Faite</button>
+      <button @click="filteredTodo = 'All'">Tous</button>
+      <button @click="filteredTodo = 'Not-completed'">A faire</button>
+      <button @click="filteredTodo = 'Completed'">Faite</button>
     </div>
     <ul class="todo__list" v-if="todos.length > 0">
       <transition-group name="fade" appear>
-        <li class="todo__item" :key="todo.id" v-for="todo in filteredTodo">
+        <li class="todo__item" :key="todo.id" v-for="todo in filteredTodos">
           <input
             type="checkbox"
             class="todo__checkbox"
@@ -50,7 +50,9 @@
         </li>
       </transition-group>
     </ul>
-    <span v-if="filteredTodo.length === 0">Vous n'avez aucune tâche à faire</span>
+    <span v-if="filteredTodos.length <= 0">
+      Vous n'avez aucune tâche à faire
+    </span>
   </div>
 </template>
 
@@ -89,7 +91,7 @@ export default {
           completed: false,
         },
       ],
-      filteredTodo: [],
+      filteredTodo: "All",
       newTodo: "",
       editingTodo: null,
       oldTitleTodo: "",
@@ -116,17 +118,18 @@ export default {
       this.editingTodo = null;
     },
     cancelEdit() {
-      this.todos.find((t) => t.id === this.editingTodo).title = this.oldTitleTodo;
+      this.todos.find((t) => t.id === this.editingTodo).title =
+        this.oldTitleTodo;
       this.editingTodo = null;
     },
-    filterTodo(filter) {
-      if (filter === "All") {
-        this.filteredTodo = this.todos;
-      } else if (filter === "Not-completed") {
-        this.filteredTodo = this.todos.filter((todo) => todo.completed === false);
-      } else if (filter === "Completed") {
-        this.filteredTodo = this.todos.filter((todo) => todo.completed === true);
-      }
+  },
+  computed: {
+    filteredTodos() {
+      if (this.filteredTodo === "Not-completed") {
+        return this.todos.filter((todo) => !todo.completed);
+      } else if (this.filteredTodo === "Completed")
+        return this.todos.filter((todo) => todo.completed);
+      return this.todos;
     },
   },
 };
