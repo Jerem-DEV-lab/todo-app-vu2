@@ -76,6 +76,7 @@ ul {
   margin: 0 auto;
   padding: 2rem;
   border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.205);
   background-color: hsl(0deg, 100%, 100%);
   transition: transform 0.2s ease-in-out;
   &:hover {
@@ -93,15 +94,25 @@ ul {
   text-align: center;
   span {
     display: inline-block;
+    position: relative;
+    margin-bottom: 0.5rem;
+    z-index: 5;
   }
   span:after {
     content: "";
     display: block;
+    position: absolute;
     width: 100%;
-    height: 4px;
-    border-radius: 4px;
+    background-image: url('../assets/underline.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: .4;
+    height: 20px;
+    z-index: -1;
+    top: 12px;
+    transform: rotate(-5deg);
+    border-radius: 8px;
     margin-top: 4px;
-    background-color: hsl(0, 0%, 100%);
   }
 }
 
