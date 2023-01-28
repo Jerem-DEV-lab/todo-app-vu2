@@ -3,13 +3,18 @@
     <input
       type="text"
       class="todo__input"
-      placeholder="Que devez-vous faire"
+      placeholder="Que devez-vous faire ?"
       v-model="newTodo"
       @keyup.enter="addTodo"
     />
-    <ul class="todo__list">
+    <div class="todo__footer">
+      <button @click="filterTodo('All')">Tous</button>
+      <button @click="filterTodo('Not-completed')">A faire</button>
+      <button @click="filterTodo('Completed')">Faite</button>
+    </div>
+    <ul class="todo__list" v-if="todos.length > 0">
       <transition-group name="fade" appear>
-        <li class="todo__item" :key="todo.id" v-for="todo in todos">
+        <li class="todo__item" :key="todo.id" v-for="todo in filteredTodo">
           <input
             type="checkbox"
             class="todo__checkbox"
@@ -45,6 +50,7 @@
         </li>
       </transition-group>
     </ul>
+    <span v-if="filteredTodo.length === 0">Vous n'avez aucune tâche à faire</span>
   </div>
 </template>
 
@@ -83,6 +89,7 @@ export default {
           completed: false,
         },
       ],
+      filteredTodo: [],
       newTodo: "",
       editingTodo: null,
       oldTitleTodo: "",
@@ -104,7 +111,6 @@ export default {
     editTodo(todoId) {
       this.editingTodo = todoId;
       this.oldTitleTodo = this.todos.find((t) => t.id === todoId).title;
-      console.log(this.oldTitleTodo);
     },
     doneEdit() {
       this.editingTodo = null;
@@ -112,6 +118,15 @@ export default {
     cancelEdit() {
       this.todos.find((t) => t.id === this.editingTodo).title = this.oldTitleTodo;
       this.editingTodo = null;
+    },
+    filterTodo(filter) {
+      if (filter === "All") {
+        this.filteredTodo = this.todos;
+      } else if (filter === "Not-completed") {
+        this.filteredTodo = this.todos.filter((todo) => todo.completed === false);
+      } else if (filter === "Completed") {
+        this.filteredTodo = this.todos.filter((todo) => todo.completed === true);
+      }
     },
   },
 };
